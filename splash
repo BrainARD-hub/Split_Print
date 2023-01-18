@@ -1,0 +1,60 @@
+import os
+
+# Get the choice from the user
+print("Select an option:")
+print("1) Print the first word of every line in a file")
+print("2) Split a file into multiple files")
+choice = input("Enter your choice: ")
+
+if choice == "1":
+    # Get the filename from the user
+    filename = input("Enter the filename: ")
+
+    # Open the original file
+    try:
+        with open(filename, "r") as f:
+            # Read the file line by line
+            for line in f:
+                # Split the line into words
+                words = line.strip().split()
+                # Print the first word
+                print(words[0])
+    except FileNotFoundError:
+        print(f"{filename} not found.")
+    except:
+        print("An error occurred.")
+
+elif choice == "2":
+    # Get the filename from the user
+    filename = input("Enter the filename: ")
+
+# Open the original file
+try:
+    with open(filename, "r") as f:
+        try:
+            # Get the number of lines per file from the user
+            lines_per_file = int(input("Enter the number of lines per file: "))
+            if lines_per_file < 1:
+                raise ValueError
+        except ValueError:
+            print("Invalid value for number of lines per file")
+            exit()
+        # Get the number of lines in the file
+        lines = f.readlines()
+        num_lines = len(lines)
+        num_files = num_lines // lines_per_file
+        if num_lines % lines_per_file != 0:
+            num_files +=1
+        # Split the file into multiple files
+        for i in range(num_files):
+            # Open a new file for writing
+            with open("split_file_{}.txt".format(i), "w") as fw:
+                # Write the next lines_per_file lines to the new file
+                for j in range(lines_per_file):
+                    if (i*lines_per_file+j) < num_lines:
+                        fw.write(lines[i * lines_per_file + j])
+        print("File has been splitted successfully.")
+except FileNotFoundError:
+    print(f"{filename} not found.")
+except:
+    print("An error occurred.")
